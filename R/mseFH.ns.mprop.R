@@ -4,7 +4,7 @@
 #' @param vardir sampling variances of direct estimations. If data is defined, it is a vector containing names of sampling variance columns. If data is not defined, it should be a data frame of sampling variances of direct estimators. The order is \eqn{var1, var2, \dots, var(q-1), cov12, \dots, cov1(q-1), cov23, \dots, cov(q-2)(q-1)}.
 #' @param MAXITER maximum number of iterations allowed in the Fisher-scoring algorithm, Default: \code{100}.
 #' @param PRECISION convergence tolerance limit for the Fisher-scoring algorithm, Default: \code{1e-4}.
-#' @param cluster Default: \code{"auto"}. Can also be the number of cluster or a data frame or matrix containing cluster information. Clustering is performed with k-medoids algorithms using the function \code{\link[fpc]{pamk}}. If \code{"auto"} is chosen, \code{krange} are set to \code{2:(nrow(data)-1)}.
+#' @param cluster Default: \code{"auto"}. If \code{cluster = "auto"}, then the clustering will be performed by the function by finding optimal number of cluster. If cluster is a vector containing numbers of cluster for each category, then clustering will be performed based on the chosen number of cluster. If cluster is a data frame or matrix containing cluster information, then the vector will be used directly to find average of random effects. Clustering is performed with k-medoids algorithms using the function \code{\link[fpc]{pamk}}. If \code{"auto"} is chosen, \code{krange} are set to \code{2:(nrow(data)-1)}.
 #' @param B number of Bootstrap iterations in calculating MSE, Default: \code{400}.
 #' @param data optional data frame containing the variables named in \code{formula} and \code{vardir}.
 #' @return The function returns a list with the following objects:
@@ -44,16 +44,19 @@
 #' vardir = c("v1", "v2", "v3", "v12", "v13", "v23")
 #' # MSE.ns <- mseFH.ns.mprop(Fo, vardir, data = datasaem.ns)
 #'
-#' ## If data is defined (and how to use cluster)
+#' ## If data is undefined (and option for cluster arguments)
 #' Fo = list(datasaem.ns$Y1 ~ datasaem.ns$X1,
 #'           datasaem.ns$Y2 ~ datasaem.ns$X2,
 #'           datasaem.ns$Y3 ~ datasaem.ns$X3)
 #' vardir = datasaem.ns[, c("v1", "v2", "v3", "v12", "v13", "v23")]
 #'
+#' ### "auto"
 #' # MSE.ns1 <- mseFH.ns.mprop(Fo, vardir, cluster = "auto")
 #'
+#' ### number of clusters
 #' # MSE.ns2 <- mseFH.ns.mprop(Fo, vardir, cluster = c(3, 2, 2))
 #'
+#' ### data frame or matrix containing cluster for each domain
 #' # MSE.ns3 <- mseFH.ns.mprop(Fo, vardir, cluster = datasaem.ns[, c("c1", "c2", "c3")])
 #'
 #' ## See the estimators

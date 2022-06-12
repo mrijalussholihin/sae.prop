@@ -23,7 +23,7 @@ mseFH.ns.uprop(
 
 \item{PRECISION}{convergence tolerance limit for the Fisher-scoring algorithm, Default: \code{1e-4}.}
 
-\item{cluster}{Default: \code{"auto"}. Can also be the number of cluster or a vector containing cluster information. Clustering is performed with k-medoids algorithms using the function \code{\link[fpc]{pamk}}. If \code{"auto"} is chosen, \code{krange} are set to \code{2:(nrow(data)-1)}.}
+\item{cluster}{Default: \code{"auto"}. If \code{cluster = "auto"}, then the clustering will be performed by the function by finding optimal number of cluster. If cluster is a number, then clustering will be performed based on the chosen number of cluster. If cluster is a vector containing cluster information, then the vector will be used directly to find average of random effects. Clustering is performed with k-medoids algorithms using the function \code{\link[fpc]{pamk}}. If \code{"auto"} is chosen, \code{krange} are set to \code{2:(nrow(data)-1)}.}
 
 \item{B}{number of Bootstrap iterations in calculating MSE, Default: \code{1000}.}
 
@@ -69,14 +69,17 @@ Fo = y ~ x1 + x2
 vardir = "vardir"
 MSE.ns <- mseFH.ns.uprop(Fo, vardir, data = datasaeu.ns)
 
-## If data is undefined (and how to use cluster)
+## If data is undefined (and option for cluster arguments)
 Fo = datasaeu.ns$y ~ datasaeu.ns$x1 + datasaeu.ns$x2
 vardir = datasaeu.ns$vardir
 
+### "auto"
 MSE.ns1 <- mseFH.ns.uprop(Fo, vardir, cluster = "auto")
 
+### number of clusters
 MSE.ns2 <- mseFH.ns.uprop(Fo, vardir, cluster = 2)
 
+### vector containing cluster for each domain
 MSE.ns3 <- mseFH.ns.uprop(Fo, vardir, cluster = datasaeu.ns$cluster)
 
 ## See the estimators

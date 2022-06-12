@@ -11,12 +11,12 @@
 #' @section Functions:
 #' \describe{
 #'   \item{\code{\link{saeFH.uprop}}}{EBLUPs based on a Univariate Fay Herriot model with Additive Logistic Transformation}
-#'   \item{\code{\link{saeFH.ns.uprop}}}{EBLUPs based on a Univariate Fay Herriot model with Additive Logistic Transformation for Non-Sampled Data}
-#'   \item{\code{\link{saeFH.mprop}}}{EBLUPs based on a Multivariate Fay Herriot model with Additive Logistic Transformation}
-#'   \item{\code{\link{saeFH.ns.mprop}}}{EBLUPs based on a Multivariate Fay Herriot model with Additive Logistic Transformation for Non-Sampled Data}
 #'   \item{\code{\link{mseFH.uprop}}}{Parametric Bootstrap Mean Squared Error of EBLUPs based on a Univariate Fay Herriot model with Additive Logistic Transformation}
+#'   \item{\code{\link{saeFH.ns.uprop}}}{EBLUPs based on a Univariate Fay Herriot model with Additive Logistic Transformation for Non-Sampled Data}
 #'   \item{\code{\link{mseFH.ns.uprop}}}{Parametric Bootstrap Mean Squared Error of EBLUPs based on a Univariate Fay Herriot model with Additive Logistic Transformation for Non-Sampled Data}
+#'   \item{\code{\link{saeFH.mprop}}}{EBLUPs based on a Multivariate Fay Herriot model with Additive Logistic Transformation}
 #'   \item{\code{\link{mseFH.mprop}}}{Parametric Bootstrap Mean Squared Error of EBLUPs based on a Multivariate Fay Herriot model with Additive Logistic Transformation}
+#'   \item{\code{\link{saeFH.ns.mprop}}}{EBLUPs based on a Multivariate Fay Herriot model with Additive Logistic Transformation for Non-Sampled Data}
 #'   \item{\code{\link{mseFH.ns.mprop}}}{Parametric Bootstrap Mean Squared Error of EBLUPs based on a Multivariate Fay Herriot model with Additive Logistic Transformation for Non-Sampled Data}
 #'
 #' }

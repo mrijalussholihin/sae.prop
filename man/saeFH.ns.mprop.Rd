@@ -22,7 +22,7 @@ saeFH.ns.mprop(
 
 \item{PRECISION}{convergence tolerance limit for the Fisher-scoring algorithm, Default: \code{1e-4}.}
 
-\item{cluster}{Default: \code{"auto"}. Can also be the number of cluster or a data frame or matrix containing cluster information. Clustering is performed with k-medoids algorithms using the function \code{\link[fpc]{pamk}}. If \code{"auto"} is chosen, \code{krange} are set to \code{2:(nrow(data)-1)}.}
+\item{cluster}{Default: \code{"auto"}. If \code{cluster = "auto"}, then the clustering will be performed by the function by finding optimal number of cluster. If cluster is a vector containing numbers of cluster for each category, then clustering will be performed based on the chosen number of cluster. If cluster is a data frame or matrix containing cluster information, then the vector will be used directly to find average of random effects. Clustering is performed with k-medoids algorithms using the function \code{\link[fpc]{pamk}}. If \code{"auto"} is chosen, \code{krange} are set to \code{2:(nrow(data)-1)}.}
 
 \item{data}{optional data frame containing the variables named in \code{formula} and \code{vardir}.}
 }
@@ -62,16 +62,19 @@ Fo = list(Y1 ~ X1,
 vardir = c("v1", "v2", "v3", "v12", "v13", "v23")
 model.ns <- saeFH.ns.mprop(Fo, vardir, data = datasaem.ns)
 
-## If data is undefined (and how to use cluster)
+## If data is undefined (and option for cluster arguments)
 Fo = list(datasaem.ns$Y1 ~ datasaem.ns$X1,
           datasaem.ns$Y2 ~ datasaem.ns$X2,
           datasaem.ns$Y3 ~ datasaem.ns$X3)
 vardir = datasaem.ns[, c("v1", "v2", "v3", "v12", "v13", "v23")]
 
+### "auto"
 model.ns1 <- saeFH.ns.mprop(Fo, vardir, cluster = "auto")
 
+### number of clusters
 model.ns2 <- saeFH.ns.mprop(Fo, vardir, cluster = c(3, 2, 2))
 
+### data frame or matrix containing cluster for each domain
 model.ns3 <- saeFH.ns.mprop(Fo, vardir, cluster = datasaem.ns[, c("c1", "c2", "c3")])
 
 ## See the estimators

@@ -4,7 +4,7 @@
 #' @param vardir vector containing the sampling variances of direct estimators for each domain. The values must be sorted as the variables in \code{formula}.
 #' @param MAXITER maximum number of iterations allowed in the Fisher-scoring algorithm, Default: \code{100}.
 #' @param PRECISION convergence tolerance limit for the Fisher-scoring algorithm, Default: \code{1e-4}.
-#' @param cluster Default: \code{"auto"}. Can also be the number of cluster or a vector containing cluster information. Clustering is performed with k-medoids algorithms using the function \code{\link[fpc]{pamk}}. If \code{"auto"} is chosen, \code{krange} are set to \code{2:(nrow(data)-1)}.
+#' @param cluster Default: \code{"auto"}. If \code{cluster = "auto"}, then the clustering will be performed by the function by finding optimal number of cluster. If cluster is a number, then clustering will be performed based on the chosen number of cluster. If cluster is a vector containing cluster information, then the vector will be used directly to find average of random effects. Clustering is performed with k-medoids algorithms using the function \code{\link[fpc]{pamk}}. If \code{"auto"} is chosen, \code{krange} are set to \code{2:(nrow(data)-1)}.
 #' @param data optional data frame containing the variables named in \code{formula} and \code{vardir}.
 #' @return The function returns a list with the following objects:
 #'    \item{est}{a data frame containing values of the estimators for each domains.}
@@ -37,14 +37,17 @@
 #' vardir = "vardir"
 #' model.ns <- saeFH.ns.uprop(Fo, vardir, data = datasaeu.ns)
 #'
-#' ## If data is undefined (and how to use cluster)
+#' ## If data is undefined (and option for cluster arguments)
 #' Fo = datasaeu.ns$y ~ datasaeu.ns$x1 + datasaeu.ns$x2
 #' vardir = datasaeu.ns$vardir
 #'
+#' ### "auto"
 #' model.ns1 <- saeFH.ns.uprop(Fo, vardir, cluster = "auto")
 #'
+#' ### number of clusters
 #' model.ns2 <- saeFH.ns.uprop(Fo, vardir, cluster = 2)
 #'
+#' ### vector containing cluster for each domain
 #' model.ns3 <- saeFH.ns.uprop(Fo, vardir, cluster = datasaeu.ns$cluster)
 #'
 #' ## See the estimators
