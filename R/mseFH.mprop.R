@@ -32,6 +32,7 @@
 #'      }
 #'
 #' @examples
+#' \donttest{
 #' ## Load dataset
 #' data(datasaem)
 #'
@@ -40,17 +41,22 @@
 #'           Y2 ~ X2,
 #'           Y3 ~ X3)
 #' vardir = c("v1", "v2", "v3", "v12", "v13", "v23")
-#' # MSE.data <- mseFH.mprop(Fo, vardir, data = datasaem)
+#' MSE.data <- mseFH.mprop(Fo, vardir, data = datasaem, B = 10)
 #'
 #' ## If data is undefined
 #' Fo = list(datasaem$Y1 ~ datasaem$X1,
 #'           datasaem$Y2 ~ datasaem$X2,
 #'           datasaem$Y3 ~ datasaem$X3)
 #' vardir = datasaem[, c("v1", "v2", "v3", "v12", "v13", "v23")]
-#' # MSE <- mseFH.mprop(Fo, vardir)
+#' MSE <- mseFH.mprop(Fo, vardir, B = 10)
 #'
 #' ## See the estimators
-#' # MSE$mse
+#' MSE$mse
+#'
+#' ## NOTE:
+#' ## B = 10 is just for examples.
+#' ## Please choose a proper number for Bootstrap iterations in real calculation.
+#' }
 #'
 #' @export mseFH.mprop
 

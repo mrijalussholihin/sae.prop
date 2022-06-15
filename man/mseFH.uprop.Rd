@@ -58,6 +58,7 @@ The function returns a list with the following objects:
 This function gives the MSE of transformed EBLUP and Empirical Best Predictor (EBP) based on a univariate Fay-Herriot model with modified parametric bootstrap approach proposed by Butar & Lahiri.
 }
 \examples{
+\donttest{
 ## Load dataset
 data(datasaeu)
 
@@ -73,5 +74,6 @@ MSE <- mseFH.uprop(Fo, vardir)
 
 ## See the estimators
 MSE$mse
+}
 
 }

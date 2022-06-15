@@ -34,6 +34,7 @@
 #'      }
 #'
 #' @examples
+#' \donttest{
 #' ## Load dataset
 #' data(datasaem.ns)
 #'
@@ -42,7 +43,7 @@
 #'           Y2 ~ X2,
 #'           Y3 ~ X3)
 #' vardir = c("v1", "v2", "v3", "v12", "v13", "v23")
-#' # MSE.ns <- mseFH.ns.mprop(Fo, vardir, data = datasaem.ns)
+#' MSE.ns <- mseFH.ns.mprop(Fo, vardir, data = datasaem.ns, B = 10)
 #'
 #' ## If data is undefined (and option for cluster arguments)
 #' Fo = list(datasaem.ns$Y1 ~ datasaem.ns$X1,
@@ -51,16 +52,21 @@
 #' vardir = datasaem.ns[, c("v1", "v2", "v3", "v12", "v13", "v23")]
 #'
 #' ### "auto"
-#' # MSE.ns1 <- mseFH.ns.mprop(Fo, vardir, cluster = "auto")
+#' MSE.ns1 <- mseFH.ns.mprop(Fo, vardir, cluster = "auto", B = 10)
 #'
 #' ### number of clusters
-#' # MSE.ns2 <- mseFH.ns.mprop(Fo, vardir, cluster = c(3, 2, 2))
+#' MSE.ns2 <- mseFH.ns.mprop(Fo, vardir, cluster = c(3, 2, 2), B = 10)
 #'
 #' ### data frame or matrix containing cluster for each domain
-#' # MSE.ns3 <- mseFH.ns.mprop(Fo, vardir, cluster = datasaem.ns[, c("c1", "c2", "c3")])
+#' MSE.ns3 <- mseFH.ns.mprop(Fo, vardir, cluster = datasaem.ns[, c("c1", "c2", "c3")], B = 10)
 #'
 #' ## See the estimators
-#' # MSE.ns$mse
+#' MSE.ns$mse
+#'
+#' ## NOTE:
+#' ## B = 10 is just for examples.
+#' ## Please choose a proper number for Bootstrap iterations in real calculation.
+#' }
 #'
 #' @export mseFH.ns.mprop
 

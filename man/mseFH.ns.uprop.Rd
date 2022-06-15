@@ -61,6 +61,7 @@ The function returns a list with the following objects:
 This function gives the MSE of transformed EBLUP based on a univariate Fay-Herriot model. For sampled domains, MSE is estimated using modified parametric bootstrap approach proposed by Butar & Lahiri. For non-sampled domains, MSE is estimated using modified approach proposed by Haris & Ubaidillah.
 }
 \examples{
+\donttest{
 ## Load dataset
 data(datasaeu.ns)
 
@@ -84,5 +85,6 @@ MSE.ns3 <- mseFH.ns.uprop(Fo, vardir, cluster = datasaeu.ns$cluster)
 
 ## See the estimators
 MSE.ns$mse
+}
 
 }

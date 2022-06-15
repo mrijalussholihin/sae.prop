@@ -11,10 +11,9 @@ Estimation under Fay Herriot Model. Small Area Estimation is used to
 borrow strength from auxiliary variables to improve the effectiveness of
 a domain sample size. This package uses Empirical Best Linear Unbiased
 Prediction (EBLUP) estimator. The Additive Logistic Transformation (alr)
-are based on transformation by Aitchison J
-<doi:10.1007/978-94-009-4109-0>. The covariance matrix for multivariate
-application is base on covariance matrix used by Esteban M, Lombardía M,
-López-Vizcaíno E, Morales D, and Pérez A
+are based on transformation by Aitchison J (1986). The covariance matrix
+for multivariate application is base on covariance matrix used by
+Esteban M, Lombardía M, López-Vizcaíno E, Morales D, and Pérez A
 <doi:10.1007/s11749-019-00688-w>. The non-sampled models are modified
 area-level models based on models proposed by Anisa R, Kurnia A, and
 Indahwati I <doi:10.9790/5728-10121519>, with univariate model using
@@ -69,7 +68,6 @@ install.packages("sae.prop")
     York: John Wiley and Sons, Inc.
 -   Aitchison, J. (1986). The Statistical Analysis of Compositional
     Data. Springer Netherlands.
-    <https://doi.org/10.1007/978-94-009-4109-0>.
 -   Esteban, M. D., Lombardía, M. J., López-Vizcaíno, E., Morales, D., &
     Pérez, A. (2020). Small area estimation of proportions under
     area-level compositional mixed models. Test, 29(3), 793–818.

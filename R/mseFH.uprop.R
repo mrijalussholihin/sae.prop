@@ -32,6 +32,7 @@
 #'      }
 #'
 #' @examples
+#' \donttest{
 #' ## Load dataset
 #' data(datasaeu)
 #'
@@ -47,6 +48,7 @@
 #'
 #' ## See the estimators
 #' MSE$mse
+#' }
 #'
 #' @export mseFH.uprop
 
