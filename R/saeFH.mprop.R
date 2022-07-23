@@ -141,9 +141,6 @@ saeFH.mprop = function(formula, vardir,
       stop(paste("Vardir is not appropiate with data. For this formula, vardir must contain",
                  paste("v", varcek[1,], varcek[2,], sep = "", collapse = " ")))
     }
-    if (any(is.na(data[,vardir]))) {
-      stop("Vardir may not contains NA values")
-    }
 
     vardir = data[,vardir]
   } else {
@@ -153,9 +150,10 @@ saeFH.mprop = function(formula, vardir,
       stop(paste("Vardir is not appropiate with data. For this formula, vardir must contain",
                  paste("v", varcek[1,], varcek[2,], sep = "", collapse = " ")))
     }
-    if (any(is.na(vardir))) {
-      stop("Vardir may not contains NA values")
-    }
+  }
+
+  if (any(is.na(vardir))) {
+    stop("Vardir may not contains NA values")
   }
 
   # Matrix Ve
@@ -273,8 +271,12 @@ saeFH.mprop = function(formula, vardir,
       }
     }
 
+    Fi.mat.Inv = tryCatch(solve(Fi.mat),
+                          error = function(e){
+                            stop("Fisher information matrix formed in REML is singular")
+                          })
 
-    theta = theta + solve(Fi.mat) %*% S.theta
+    theta = theta + Fi.mat.Inv %*% S.theta
 
     theta[1:k] = mapply(max, theta[1:k], PRECISION)
 

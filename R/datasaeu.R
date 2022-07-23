@@ -1,7 +1,7 @@
 #' @title Data generated based on Univariate Fay Herriot Model with Additive Logistic Transformation
 #' @description This data is generated based on univariate Fay-Herriot model and then transformed by using inverse Additive Logistic Transformation (alr). The steps are as follows:
 #' \enumerate{
-#'   \item \eqn{\beta} are set to be \eqn{\beta_{1} = \beta_{2} = 1}
+#'   \item \eqn{\beta} are set to be \eqn{\beta_{0} = \beta_{1} = \beta_{2} = 1}
 #'   \item Auxiliary variables are set as follows:
 #'   \itemize{
 #'     \item \eqn{x_{1} \sim N(0, 1)}

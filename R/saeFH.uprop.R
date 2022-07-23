@@ -64,22 +64,25 @@ saeFH.uprop = function(formula, vardir,
 
   # Getting Data
   if (!missing(data)) {
-    formuladata = model.frame(formula, na.action = na.omit, data)
+    formuladata = model.frame(formula, na.action = na.pass, data)
     X           = model.matrix(formula, data)
   } else{
-    formuladata = model.frame(formula, na.action = na.omit)
+    formuladata = model.frame(formula, na.action = na.pass)
     X = model.matrix(formula)
   }
 
   Z = formuladata[,1]
-  if (any(Z < 0 | Z > 1)) {
-    stop("Proportion in a domain must fall between 0 and 1")
-  }
-
   D = length(Z)
+
+  # Check for non-sampled cases
   non.sampled = which(Z == 0 | Z == 1 | is.na(Z))
   if(length(non.sampled) > 0) {
     stop("This data contain non-sampled cases (0, 1, or NA).\nPlease use saeFH.ns.uprop() for data with non-sampled cases")
+  }
+
+  # Check whether Z is proportion
+  if (any(Z < 0 | Z > 1)) {
+    stop("Proportion in a domain must fall between 0 and 1")
   }
 
   # Getting Vardir
@@ -94,16 +97,7 @@ saeFH.uprop = function(formula, vardir,
     }
   }
 
-  # Check if there is NA Values in Data & Vardir
-  if (attr(attributes(formuladata)$terms, "response") == 1){
-    textformula = paste(formula[2], formula[1], formula[3])
-  } else{
-    textformula = paste(formula[1], formula[2])
-  }
-
-  if (length(na.action(formuladata))>0) {
-    stop("Argument formula=", textformula, " contains NA values.")
-  }
+  # Check if there is NA Values in Vardir
   if (any(is.na(vardir))) {
     stop("Argument vardir=", namevar, " contains NA values.")
   }

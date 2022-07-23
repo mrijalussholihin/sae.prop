@@ -89,6 +89,19 @@ mseFH.mprop = function(formula, vardir,
   }
   k = length(formula)
 
+  # If formula is more suitable for univariate
+  if (k == 1) {
+    result.uni = mseFH.uprop(formula[[1]],
+                             vardir = vardir,
+                             MAXITER = MAXITER,
+                             PRECISION = PRECISION,
+                             L = L,
+                             B = B,
+                             data = data)
+
+    return(result.uni)
+  }
+
   if (!missing(data)) {
     formula.matrix = lapply(formula, function(x){model.frame(x, na.action = na.pass, data)})
     X.list = lapply(1:k, function(x){model.matrix(formula[[x]], formula.matrix[[x]])})
@@ -161,9 +174,6 @@ mseFH.mprop = function(formula, vardir,
       stop(paste("Vardir is not appropiate with data. For this formula, vardir must contain",
                  paste("v", varcek[1,], varcek[2,], sep = "", collapse = " ")))
     }
-    if (any(is.na(data[,vardir]))) {
-      stop("Vardir may not contains NA values")
-    }
 
     vardir = data[,vardir]
   } else {
@@ -173,9 +183,10 @@ mseFH.mprop = function(formula, vardir,
       stop(paste("Vardir is not appropiate with data. For this formula, vardir must contain",
                  paste("v", varcek[1,], varcek[2,], sep = "", collapse = " ")))
     }
-    if (any(is.na(vardir))) {
-      stop("Vardir may not contains NA values")
-    }
+  }
+
+  if (any(is.na(vardir))) {
+    stop("Vardir may not contains NA values")
   }
 
 
@@ -188,7 +199,6 @@ mseFH.mprop = function(formula, vardir,
                         data = data)
 
   if (result$fit$convergence==FALSE) {
-    warning("REML does not converge.\n")
     return (result);
   }
 
@@ -231,10 +241,9 @@ mseFH.mprop = function(formula, vardir,
                          width = 100)      # Width of the progress bar
 
 
-  for (i in 1:B) {
-    # Updates the current state
-    pb$tick()
-
+  # Bootstrap Iterations
+  i = 1
+  while(i <= B) {
     # 2. Generate
     u.s = mvrnorm(D, mu = rep(0, k), Sigma = result$fit$refvar)
     e.s = t(sapply(Ve.d, function(x){mvrnorm(mu = rep(0, k), Sigma = x)}))
@@ -254,8 +263,17 @@ mseFH.mprop = function(formula, vardir,
                         L = L,
                         data = data.i)
 
-    PC = cbind(PC, as.matrix((model$est$PC - p.s)^2))
-    EBP = cbind(EBP, as.matrix((model$est$EBP - p.s)^2))
+    if (model$fit$convergence == FALSE) {
+      next
+    } else {
+      PC = cbind(PC, as.matrix((model$est$PC - p.s)^2))
+      EBP = cbind(EBP, as.matrix((model$est$EBP - p.s)^2))
+
+      i = i + 1
+
+      # Updates the current state
+      pb$tick()
+    }
   }
 
   mse_PC = matrix(nrow = D, ncol = k)

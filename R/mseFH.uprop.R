@@ -64,22 +64,25 @@ mseFH.uprop = function(formula, vardir,
 
   # Getting Data
   if (!missing(data)) {
-    formuladata = model.frame(formula, na.action = na.omit, data)
+    formuladata = model.frame(formula, na.action = na.pass, data)
     X           = model.matrix(formula, data)
   } else{
-    formuladata = model.frame(formula, na.action = na.omit)
+    formuladata = model.frame(formula, na.action = na.pass)
     X = model.matrix(formula)
   }
 
   Z = formuladata[,1]
-  if (any(Z < 0 | Z > 1)) {
-    stop("Proportion in a domain must fall between 0 and 1")
-  }
-
   D = length(Z)
+
+  # Check for non-sampled cases
   non.sampled = which(Z == 0 | Z == 1 | is.na(Z))
   if(length(non.sampled) > 0) {
-    stop("This data contain non-sampled cases (0, 1, or NA).\nPlease use mseFH.ns.uprop() for data with non-sampled cases")
+    stop("This data contain non-sampled cases (0, 1, or NA).\nPlease use saeFH.ns.uprop() for data with non-sampled cases")
+  }
+
+  # Check whether Z is proportion
+  if (any(Z < 0 | Z > 1)) {
+    stop("Proportion in a domain must fall between 0 and 1")
   }
 
   # Getting Vardir
@@ -94,17 +97,8 @@ mseFH.uprop = function(formula, vardir,
     }
   }
 
-  # Check if there is NA Values in Data & Vardir
-  if (attr(attributes(formuladata)$terms, "response") == 1){
-    textformula = paste(formula[2], formula[1], formula[3])
-  } else{
-    textformula = paste(formula[1], formula[2])
-  }
-
-  if (length(na.action(formuladata))>0) {
-    stop("Argument formula=", textformula, " contains NA values.")
-  }
-  if (any(is.na(vardir))) {
+  # Check if there is NA Values in Vardir
+  if (any(is.na(vardir.z))) {
     stop("Argument vardir=", namevar, " contains NA values.")
   }
 
@@ -123,7 +117,6 @@ mseFH.uprop = function(formula, vardir,
                         L = L)
 
   if (result$fit$convergence==FALSE) {
-    warning("REML does not converge.\n")
     return (result);
   }
 
@@ -140,11 +133,9 @@ mseFH.uprop = function(formula, vardir,
                          clear = FALSE,    # If TRUE, clears the bar when finish
                          width = 100)      # Width of the progress bar
 
-
-  for (i in 1:B) {
-    # Updates the current state
-    pb$tick()
-
+  # Bootstrap Iterations
+  i = 1
+  while(i <= B) {
     # Butar & Lahiri
     ## Step 1
     y.s = rnorm(D, X %*% result$fit$estcoef$beta, sqrt(result$fit$refvar))
@@ -161,8 +152,17 @@ mseFH.uprop = function(formula, vardir,
                         PRECISION = PRECISION,
                         L = L)
 
-    PC[, i] = (model$est$PC - p.s)^2
-    EBP[, i] = (model$est$EBP - p.s)^2
+    if (model$fit$convergence == FALSE) {
+      next
+    } else {
+      PC[, i] = (model$est$PC - p.s)^2
+      EBP[, i] = (model$est$EBP - p.s)^2
+
+      i = i + 1
+
+      # Updates the current state
+      pb$tick()
+    }
   }
 
   result$mse = data.frame(PC = rowMeans(PC, na.rm = T),

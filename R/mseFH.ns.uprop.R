@@ -158,6 +158,10 @@ mseFH.ns.uprop = function(formula, vardir,
                           L = 1000,
                           B = B)
 
+    if (result$fit$convergence==FALSE) {
+      return (result);
+    }
+
     result$est$status = "Sampled"
 
     result$fit = append(result$fit, list(cluster.information = NA), 4)
@@ -176,7 +180,6 @@ mseFH.ns.uprop = function(formula, vardir,
                            cluster = clust.df)
 
   if (result$fit$convergence==FALSE) {
-    warning("REML does not converge.\n")
     return (result);
   }
 
@@ -206,11 +209,9 @@ mseFH.ns.uprop = function(formula, vardir,
                          clear = FALSE,    # If TRUE, clears the bar when finish
                          width = 100)      # Width of the progress bar
 
-
-  for (i in 1:B) {
-    # Updates the current state
-    pb$tick()
-
+  # Bootstrap Iterations
+  i = 1
+  while(i <= B) {
     # Butar & Lahiri
     ## Step 1
     y.s = rnorm(D, X %*% result$fit$estcoef$beta, sqrt(result$fit$refvar))
@@ -227,8 +228,16 @@ mseFH.ns.uprop = function(formula, vardir,
                            PRECISION = PRECISION,
                            cluster = clust.df)
 
+    if (model$fit$convergence == FALSE) {
+      next
+    } else {
+      PC[, i] = (model$est$PC - p.s)^2
 
-    PC[, i] = (model$est$PC - p.s)^2
+      i = i + 1
+
+      # Updates the current state
+      pb$tick()
+    }
   }
 
   result$mse = data.frame(PC = rowMeans(PC, na.rm = T),

@@ -89,6 +89,18 @@ mseFH.ns.mprop = function(formula, vardir,
   }
   k = length(formula)
 
+  # If formula is more suitable for univariate
+  if (k == 1) {
+    result.uni = mseFH.ns.uprop(formula[[1]],
+                                vardir = vardir,
+                                MAXITER = MAXITER,
+                                PRECISION = PRECISION,
+                                cluster = cluster,
+                                B = B,
+                                data = data)
+
+    return(result.uni)
+  }
 
   if (!missing(data)) {
     formula.matrix = lapply(formula, function(x){model.frame(x, na.action = na.pass, data)})
@@ -100,6 +112,9 @@ mseFH.ns.mprop = function(formula, vardir,
 
   # Z Matrix
   Z = data.frame(Reduce(cbind, lapply(formula.matrix, `[`, 1)))
+  if (any(rowSums(Z, na.rm = T) < 0 | rowSums(Z, na.rm = T) > 1)) {
+    stop("Hold on, the dependent variables doesn't seem right.\nMake sure your dependent variables are compositional data\n(sum of proportion in one area/domain falls between 0 and 1)")
+  }
 
   # Variables
   D = nrow(Z)
@@ -158,7 +173,6 @@ mseFH.ns.mprop = function(formula, vardir,
     }
 
     vardir = data[,vardir]
-
   } else {
     varcek = combn(0:k,2)
     vardir = data.frame(vardir = vardir)
@@ -166,8 +180,12 @@ mseFH.ns.mprop = function(formula, vardir,
       stop(paste("Vardir is not appropiate with data. For this formula, vardir must contain",
                  paste("v", varcek[1,], varcek[2,], sep = "", collapse = " ")))
     }
-
   }
+
+  if (any(is.na(vardir[-non.sampled, ]))) {
+    stop("If value of a domain is not [0, 1, or NA], vardir for corresponding domain must be defined")
+  }
+
 
 
   # 1. Fit the model
@@ -179,7 +197,6 @@ mseFH.ns.mprop = function(formula, vardir,
                            cluster = cluster)
 
   if (result$fit$convergence==FALSE) {
-    warning("REML does not converge.\n")
     return (result);
   }
 
@@ -247,11 +264,9 @@ mseFH.ns.mprop = function(formula, vardir,
                          clear = FALSE,    # If TRUE, clears the bar when finish
                          width = 100)      # Width of the progress bar
 
-
-  for (i in 1:B) {
-    # Updates the current state
-    pb$tick()
-
+  # Bootstrap Iterations
+  i = 1
+  while(i <= B) {
     # 2. Generate
     u.s = mvrnorm(D, mu = rep(0, k), Sigma = result$fit$refvar)
     e.s = t(sapply(Ve.d, function(x){mvrnorm(mu = rep(0, k), Sigma = x)}))
@@ -270,8 +285,20 @@ mseFH.ns.mprop = function(formula, vardir,
                            PRECISION = PRECISION,
                            data = data.i)
 
-    PC = cbind(PC, as.matrix((model$est[, 1:k] - p.s)^2))
+    if (model$fit$convergence == FALSE) {
+      next
+    } else {
+      PC = cbind(PC, as.matrix((model$est[, 1:k] - p.s)^2))
+
+      i = i + 1
+
+      # Updates the current state
+      pb$tick()
+    }
   }
+
+
+
 
   mse_PC = matrix(nrow = D, ncol = k)
   for (i in 1:k) {

@@ -95,8 +95,8 @@ saeFH.ns.mprop = function(formula, vardir,
                                 vardir = vardir,
                                 MAXITER = MAXITER,
                                 PRECISION = PRECISION,
-                                data = data,
-                                cluster = cluster)
+                                cluster = cluster,
+                                data = data)
 
     return(result.uni)
   }
@@ -160,10 +160,12 @@ saeFH.ns.mprop = function(formula, vardir,
   if (length(non.sampled) > 0) {
     if (is.character(cluster)) {
 
-      if (cluster == "auto") {
-        clust.df = setNames(data.frame(Reduce(cbind, lapply(X.list, function(x){
-          pamk(x[, -1], scaling = T, krange = 2:(D - 1))$pamobject$clustering
-        }))), names(Y))
+      if (length(cluster) == 1) {
+        if (cluster == "auto") {
+          clust.df = setNames(data.frame(Reduce(cbind, lapply(X.list, function(x){
+            pamk(x[, -1], scaling = T, krange = 2:(D - 1))$pamobject$clustering
+          }))), names(Y))
+        }
       } else {
         stop("Invalid input of cluster argument")
       }
@@ -190,7 +192,6 @@ saeFH.ns.mprop = function(formula, vardir,
     }))
 
     if (!clust.valid) {
-      print(data.frame(Z, clust.df, status = ifelse(1:D %in% non.sampled, "Non-Sampled", "Sampled")))
       stop("A cluster may not contain all non-sampled area, please select other number of cluster or give other cluster information")
     }
   }
@@ -217,6 +218,10 @@ saeFH.ns.mprop = function(formula, vardir,
       stop(paste("Vardir is not appropiate with data. For this formula, vardir must contain",
                  paste("v", varcek[1,], varcek[2,], sep = "", collapse = " ")))
     }
+  }
+
+  if (any(is.na(vardir[-non.sampled, ]))) {
+    stop("If value of a domain is not [0, 1, or NA], vardir for corresponding domain must be defined")
   }
 
   # Matrix Ve
@@ -341,7 +346,12 @@ saeFH.ns.mprop = function(formula, vardir,
     }
 
 
-    theta = theta + solve(Fi.mat) %*% S.theta
+    Fi.mat.Inv = tryCatch(solve(Fi.mat),
+                          error = function(e){
+                            stop("Fisher information matrix formed in REML is singular")
+                          })
+
+    theta = theta + Fi.mat.Inv %*% S.theta
 
     theta[1:k] = mapply(max, theta[1:k], PRECISION)
 
