@@ -1,7 +1,7 @@
 Package: sae.prop
 Type: Package
 Title: Small Area Estimation using Fay-Herriot Models with Additive Logistic Transformation
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: c(person("M. Rijalus", "Sholihin", role = c("aut", "cre"),
                     email = "221810400@stis.ac.id"),
               person("Cucu", "Sumarni", role = c("aut"),
